@@ -1,3 +1,3 @@
 # Gout
 
-This is a go web frameowrk, like Gin.
+This is a go web framework, like Gin.

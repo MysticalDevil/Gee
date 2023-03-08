@@ -3,27 +3,21 @@ package main
 
 import (
 	"fmt"
-	"log"
+	"gout"
 	"net/http"
 )
 
-// Engine is the uni handler for all requests
-type Engine struct{}
-
-func (e *Engine) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	switch req.URL.Path {
-	case "/":
+func main() {
+	r := gout.New()
+	r.GET("/", func(w http.ResponseWriter, req *http.Request) {
 		fmt.Fprintf(w, "URL.Path = %q\n", req.URL.Path)
-	case "/hello":
+	})
+
+	r.GET("/hello", func(w http.ResponseWriter, req *http.Request) {
 		for k, v := range req.Header {
 			fmt.Fprintf(w, "Header[%q] = %q\n", k, v)
 		}
-	default:
-		fmt.Fprintf(w, "404 NOT FOUND: %s\n", req.URL)
-	}
-}
+	})
 
-func main() {
-	engine := new(Engine)
-	log.Fatal(http.ListenAndServe(":8080", engine))
+	r.Run(":8080")
 }
