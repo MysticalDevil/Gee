@@ -3,11 +3,14 @@ package main
 
 import (
 	"gout"
+	"log"
 	"net/http"
+	"time"
 )
 
 func main() {
 	r := gout.New()
+	r.Use(gout.Logger())
 
 	r.GET("/index", func(c *gout.Context) {
 		c.HTML(http.StatusOK, "<h1>Index Page</h1>")
@@ -26,6 +29,7 @@ func main() {
 	}
 
 	v2 := r.Group("/v2")
+	v2.Use(onlyForV2())
 	{
 		v2.GET("/hello/:name", func(c *gout.Context) {
 			// expect /hello/gout
@@ -40,4 +44,15 @@ func main() {
 	}
 
 	r.Run(":8080")
+}
+
+func onlyForV2() gout.HandlerFunc {
+	return func(c *gout.Context) {
+		// Start timer
+		t := time.Now()
+		// if a server error occurred
+		c.Fail(http.StatusInternalServerError, "Internal Server Error")
+		// Calculate resolution time
+		log.Printf("[%d] %s in %v for group v2", c.StatusCode, c.Req.RequestURI, time.Since(t))
+	}
 }
