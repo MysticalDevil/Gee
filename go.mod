@@ -1,3 +1,3 @@
-module github.com/MysticalDevil/Gout
+module github.com/MysticalDevil/gout
 
 go 1.20
