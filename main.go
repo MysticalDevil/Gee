@@ -4,7 +4,6 @@ package main
 import (
 	"fmt"
 	"gout"
-	"html/template"
 	"net/http"
 	"time"
 )
@@ -22,29 +21,13 @@ func FormatAsDate(t time.Time) string {
 func main() {
 	r := gout.Default()
 
-	r.SetFuncMap(template.FuncMap{
-		"FormatAsDate": FormatAsDate,
-	})
-	r.LoadHTMLGlob("templates/*")
-	r.Static("/assets", "./static")
-
-	stu1 := &student{Name: "Gout", Age: 20}
-	stu2 := &student{Name: "Alpha", Age: 18}
 	r.GET("/", func(c *gout.Context) {
-		c.HTML(http.StatusOK, "css.tmpl", nil)
+		c.String(http.StatusOK, "Hello Gout\n")
 	})
-	r.GET("/students", func(c *gout.Context) {
-		c.HTML(http.StatusOK, "arr.tmpl", gout.H{
-			"title":  "gout",
-			"stuArr": [2]*student{stu1, stu2},
-		})
-	})
-
-	r.GET("/date", func(c *gout.Context) {
-		c.HTML(http.StatusOK, "custom_func.tmpl", gout.H{
-			"title": "gout",
-			"now":   time.Date(2022, 3, 9, 0, 0, 0, 0, time.UTC),
-		})
+	// index out of range for testing Recovery()
+	r.GET("/panic", func(c *gout.Context) {
+		names := []string{"gout"}
+		c.String(http.StatusOK, names[100])
 	})
 
 	r.Run(":8080")

@@ -40,7 +40,7 @@ func New() *Engine {
 // Default is base on New with Logger middleware
 func Default() *Engine {
 	engine := New()
-	engine.Use(Logger())
+	engine.Use(Logger(), Recovery())
 	return engine
 }
 
